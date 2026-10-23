@@ -48,10 +48,20 @@ class TimeLineTapTest {
 				}
 			}
 		}
+		pumpFrames()
+	}
+
+	/**
+	 * The frozen clock stops the tap detector from arming and re-arming on its own, which silently
+	 * swallows taps on a slow device. Hand it frames instead.
+	 */
+	private fun pumpFrames() {
+		composeTestRule.mainClock.advanceTimeBy(FRAME_PUMP_MS)
 	}
 
 	private fun tap(x: Float, y: Float) {
 		composeTestRule.onNodeWithTag(TAG).performTouchInput { click(Offset(x, y)) }
+		pumpFrames()
 	}
 
 	@Test
@@ -73,6 +83,12 @@ class TimeLineTapTest {
 		tap(phaseCenterX(2), CENTER_Y + BAR_HALF + 4f)
 
 		assertTrue(clicked.toString(), clicked.isEmpty())
+
+		// A tap on the bar still lands, so the two misses were the bar bounds rather than taps
+		// going nowhere.
+		tap(phaseCenterX(2), CENTER_Y)
+
+		assertEquals(listOf(Stages.phases[2]), clicked)
 	}
 
 	private companion object {
@@ -87,5 +103,7 @@ class TimeLineTapTest {
 		const val START_OFFSET = 24f
 		const val CENTER_Y = 32f
 		const val BAR_HALF = 16f
+
+		const val FRAME_PUMP_MS = 100L
 	}
 }
