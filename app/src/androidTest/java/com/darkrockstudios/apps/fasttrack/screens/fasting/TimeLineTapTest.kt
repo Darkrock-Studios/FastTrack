@@ -39,7 +39,7 @@ class TimeLineTapTest {
 		composeTestRule.mainClock.autoAdvance = false
 		composeTestRule.setContent {
 			CompositionLocalProvider(LocalDensity provides Density(density = 2f, fontScale = 1f)) {
-				Box(modifier = Modifier.size(360.dp, 64.dp)) {
+				Box(modifier = Modifier.size(150.dp, 64.dp)) {
 					TimeLine(
 						elapsedHours = 30.0,
 						modifier = Modifier.testTag(TAG),
@@ -48,20 +48,10 @@ class TimeLineTapTest {
 				}
 			}
 		}
-		pumpFrames()
-	}
-
-	/**
-	 * The frozen clock stops the tap detector from arming and re-arming on its own, which silently
-	 * swallows taps on a slow device. Hand it frames instead.
-	 */
-	private fun pumpFrames() {
-		composeTestRule.mainClock.advanceTimeBy(FRAME_PUMP_MS)
 	}
 
 	private fun tap(x: Float, y: Float) {
 		composeTestRule.onNodeWithTag(TAG).performTouchInput { click(Offset(x, y)) }
-		pumpFrames()
 	}
 
 	@Test
@@ -94,16 +84,15 @@ class TimeLineTapTest {
 	private companion object {
 		const val TAG = "timeline"
 
-		// 360 dp wide at density 2 -> 720 px. padding 16 dp = 32 px, spacing 4 dp = 8 px,
-		// slant 8 dp = 16 px, bar 16 dp = 32 px.
-		// phaseWidth = (720 - 2*32 - 4*8) / 5 = 124.8
-		// totalWidth = 5*124.8 + 4*8 + 16 = 672, so startOffset = (720 - 672) / 2 = 24
-		const val PHASE_WIDTH = 124.8f
+		// 150 dp wide at density 2 -> 300 px, which fits the 320 px window of a default emulator.
+		// A wider box gets squeezed to the window and every tap lands on the wrong phase.
+		// padding 16 dp = 32 px, spacing 4 dp = 8 px, slant 8 dp = 16 px, bar 16 dp = 32 px.
+		// phaseWidth = (300 - 2*32 - 4*8) / 5 = 40.8
+		// totalWidth = 5*40.8 + 4*8 + 16 = 252, so startOffset = (300 - 252) / 2 = 24
+		const val PHASE_WIDTH = 40.8f
 		const val PHASE_STRIDE = PHASE_WIDTH + 8f
 		const val START_OFFSET = 24f
 		const val CENTER_Y = 32f
 		const val BAR_HALF = 16f
-
-		const val FRAME_PUMP_MS = 100L
 	}
 }
