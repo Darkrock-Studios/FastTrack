@@ -27,11 +27,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Install NDK
-        # AGP skips stripping native libs when the pinned NDK is missing, which breaks F-Droid's
-        # reproducible build check.
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;$(sed -n 's/^ndk = "\(.*\)"/\1/p' gradle/libs.versions.toml)"
-
       - name: Decode Keystore
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
@@ -62,6 +57,11 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Install NDK
+        # AGP skips stripping native libs when the pinned NDK is missing, which breaks F-Droid's
+        # reproducible build check.
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;$(sed -n 's/^ndk = "\(.*\)"/\1/p' gradle/libs.versions.toml)"
 
       - name: Enable KVM
         run: |
