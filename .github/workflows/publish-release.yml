@@ -23,6 +23,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
+      - name: Install NDK
+        # AGP skips stripping native libs when the pinned NDK is missing, which breaks F-Droid's
+        # reproducible build check.
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;$(sed -n 's/^ndk = "\(.*\)"/\1/p' gradle/libs.versions.toml)"
+
       - name: Grant Permission to Execute
         run: chmod +x gradlew
 
