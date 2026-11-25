@@ -40,7 +40,7 @@ class InfoActivity : AppCompatActivity() {
 								.fillMaxWidth(),
 							title = { Text(stringResource(id = R.string.action_info)) },
 							navigationIcon = {
-								IconButton(onClick = { onBackPressed() }) {
+								IconButton(onClick = { finish() }) {
 									Icon(
 										imageVector = Icons.Default.ArrowBack,
 										contentDescription = "Back"
@@ -58,10 +58,5 @@ class InfoActivity : AppCompatActivity() {
 				}
 			}
 		}
-	}
-
-	override fun onSupportNavigateUp(): Boolean {
-		onBackPressed()
-		return true
 	}
 }
