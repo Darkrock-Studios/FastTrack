@@ -10,6 +10,7 @@ plugins {
 android {
 	namespace = "com.darkrockstudios.apps.fasttrack"
 	compileSdk = libs.versions.compileSdk.get().toInt()
+	compileSdkMinor = libs.versions.compileSdkMinor.get().toInt()
 	// Pinned so dependency .so files are stripped identically here and on F-Droid, which verifies
 	// its build against the release APK.
 	ndkVersion = libs.versions.ndk.get()
